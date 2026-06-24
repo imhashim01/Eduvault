@@ -1,0 +1,9 @@
+# Ignore uploaded user files and large generated content
+uploads/
+
+# Ignore sensitive PHP config if present
+php/config.php
+
+# Ignore OS files
+Thumbs.db
+.DS_Store
