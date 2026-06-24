@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduVault – Academic Submission & Similarity Analyzer</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="logo">
+      <span class="logo-hex">&#9698;</span> EduVault
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#stats">Stats</a></li>
+      <li><a href="login.html" class="nav-login">Sign In</a></li>
+      <li><a href="register.html" class="nav-signup">Get Started</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-orb orb1"></div>
+    <div class="hero-orb orb2"></div>
+    <div class="grid-lines"></div>
+  </div>
+  <div class="hero-content">
+    <span class="hero-badge">&#9679; AI-Powered Academic Integrity</span>
+    <h1 class="hero-title">Secure. Analyze.<br><span class="accent">Authenticate.</span></h1>
+    <p class="hero-desc">Next-generation platform for academic submission management and intelligent plagiarism detection. Built for institutions that demand excellence.</p>
+    <div class="hero-btns">
+      <a href="register.html" class="btn btn-primary">Launch Dashboard &rarr;</a>
+      <a href="#how" class="btn btn-outline">How It Works</a>
+    </div>
+    <div class="hero-stats-row">
+      <div class="hero-stat">
+        <span class="stat-n" data-target="98.7" data-decimal="1">0</span><span class="stat-suf">%</span>
+        <span class="stat-l">Detection Accuracy</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="hero-stat">
+        <span class="stat-n" data-target="250" data-decimal="0">0</span><span class="stat-suf">K+</span>
+        <span class="stat-l">Documents Analyzed</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="hero-stat">
+        <span class="stat-n" data-target="1200" data-decimal="0">0</span><span class="stat-suf">+</span>
+        <span class="stat-l">Institutions</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="radar-card">
+      <div class="radar-title">Similarity Radar</div>
+      <canvas id="heroRadar" width="260" height="260"></canvas>
+      <div class="radar-score">87<span>%</span></div>
+      <div class="radar-risk high">HIGH RISK</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-tag">Capabilities</span>
+      <h2>Everything You Need for <em>Academic Integrity</em></h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feat-icon">&#128274;</div>
+        <h3>Secure Vault Storage</h3>
+        <p>End-to-end encrypted document storage with role-based access control and full audit trails.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">&#129516;</div>
+        <h3>Similarity DNA Analysis</h3>
+        <p>Multi-layer comparison engine detecting paraphrasing, structure mirroring, and source reuse.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">&#128225;</div>
+        <h3>Radar Intelligence</h3>
+        <p>Visual radar charts showing 5-axis similarity: originality, structure, citations, paraphrase, sources.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">&#9889;</div>
+        <h3>Real-Time Processing</h3>
+        <p>Sub-second similarity scoring with live progress indicators and instant risk flagging.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">&#127917;</div>
+        <h3>Admin Control Center</h3>
+        <p>Full CRUD management panel with batch operations, export tools, and custom thresholds.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">&#128202;</div>
+        <h3>Analytics Suite</h3>
+        <p>Department-wide trend reports, submission timelines, and risk distribution heatmaps.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section section-dark" id="how">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-tag">Process</span>
+      <h2>Three Steps to <em>Integrity Assurance</em></h2>
+    </div>
+    <div class="steps-row">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <h3>Submit Assignment</h3>
+        <p>Students upload PDF, DOCX, or TXT files through the secure portal with metadata tagging.</p>
+      </div>
+      <div class="step-arrow">&#8594;</div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <h3>AI Analysis Engine</h3>
+        <p>The similarity engine cross-references submissions against the vault database and generates a score.</p>
+      </div>
+      <div class="step-arrow">&#8594;</div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <h3>Visual Report</h3>
+        <p>Instructors receive color-coded risk ratings, radar charts, and matched text highlights.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section" id="stats">
+  <div class="container">
+    <div class="stats-layout">
+      <div class="stats-text">
+        <span class="section-tag">Impact</span>
+        <h2>Trusted by Leading <em>Academic Institutions</em></h2>
+        <p>From community colleges to R1 research universities, EduVault protects the value of academic credentials worldwide.</p>
+        <a href="register.html" class="btn btn-primary">Start Free Trial</a>
+      </div>
+      <div class="stats-boxes">
+        <div class="stat-box"><span class="big-num">99.2<em>%</em></span><span>Uptime SLA</span></div>
+        <div class="stat-box"><span class="big-num">2.4<em>s</em></span><span>Avg. Analysis Time</span></div>
+        <div class="stat-box"><span class="big-num">40+</span><span>File Formats</span></div>
+        <div class="stat-box"><span class="big-num">SOC2<em>&#10003;</em></span><span>Certified Secure</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="logo"><span class="logo-hex">&#9698;</span> EduVault</span>
+        <p>Protecting academic integrity since 2024.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <a href="login.html">Login</a>
+          <a href="register.html">Register</a>
+          <a href="dashboard.html">Dashboard</a>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <a href="#">Documentation</a>
+          <a href="#">API Reference</a>
+          <a href="#">Support</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2025 EduVault. All rights reserved.</span>
+      <span class="mono">v2.4.1</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

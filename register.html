@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register – EduVault</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-page">
+
+<div class="auth-bg">
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+</div>
+
+<div class="auth-wrap">
+  <div class="auth-left">
+    <a href="index.html" class="logo"><span class="logo-hex">&#9698;</span> EduVault</a>
+    <div class="auth-tagline">
+      <canvas id="authRadar" width="220" height="220"></canvas>
+      <h2>Join the Future<br>of Education.</h2>
+      <p>Trusted by 1,200+ institutions worldwide.</p>
+    </div>
+    <div class="perks">
+      <div class="perk">&#10003; Free for students</div>
+      <div class="perk">&#10003; Instant similarity reports</div>
+      <div class="perk">&#10003; SOC2 certified storage</div>
+      <div class="perk">&#10003; No credit card required</div>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-card">
+      <h1>Create Account</h1>
+      <p class="auth-sub">Start protecting your academic work today</p>
+
+      <!-- Step indicator -->
+      <div class="steps-indicator">
+        <div class="step-dot active" id="dot1">1</div>
+        <div class="step-line" id="line1"></div>
+        <div class="step-dot" id="dot2">2</div>
+        <div class="step-line" id="line2"></div>
+        <div class="step-dot" id="dot3">3</div>
+      </div>
+      <div class="step-labels">
+        <span class="active" id="lbl1">Personal</span>
+        <span id="lbl2">Academic</span>
+        <span id="lbl3">Security</span>
+      </div>
+
+      <form id="regForm" action="php/register.php" method="POST" onsubmit="handleRegister(event)">
+
+        <!-- Step 1 -->
+        <div class="form-step" id="step1" style="display:block">
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name</label>
+              <div class="input-group">
+                <span class="input-icon">&#128100;</span>
+                <input type="text" name="first_name" id="firstNameField" placeholder="John">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <div class="input-group">
+                <span class="input-icon">&#128100;</span>
+                <input type="text" name="last_name" id="lastNameField" placeholder="Doe">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <div class="input-group">
+              <span class="input-icon">&#9993;</span>
+              <input type="email" name="email" id="emailField" placeholder="john@university.edu">
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary full" onclick="nextStep(2)">Continue &rarr;</button>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="form-step" id="step2" style="display:none">
+          <div class="form-group">
+            <label>Institution Name</label>
+            <div class="input-group">
+              <span class="input-icon">&#127963;</span>
+              <input type="text" name="institution" id="institutionField" placeholder="University of Excellence">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Student ID</label>
+              <div class="input-group">
+                <span class="input-icon">#</span>
+                <input type="text" name="student_id" placeholder="STU-2024-001 (optional)">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Department</label>
+              <div class="input-group">
+                <span class="input-icon">&#128218;</span>
+                <select name="department">
+                  <option value="">Select...</option>
+                  <option>Computer Science</option>
+                  <option>Engineering</option>
+                  <option>Business</option>
+                  <option>Law</option>
+                  <option>Medicine</option>
+                  <option>Arts &amp; Humanities</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-outline" onclick="nextStep(1)">&larr; Back</button>
+            <button type="button" class="btn btn-primary" onclick="nextStep(3)">Continue &rarr;</button>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="form-step" id="step3" style="display:none">
+          <div class="form-group">
+            <label>Password</label>
+            <div class="input-group">
+              <span class="input-icon">&#128274;</span>
+              <input type="password" name="password" id="regPw" placeholder="Min. 8 characters" oninput="checkStrength(this.value)">
+              <button type="button" class="pw-toggle" onclick="togglePw('regPw', this)">&#128065;</button>
+            </div>
+            <div class="pw-strength-bar"><div class="pw-bar-fill" id="pwBar"></div></div>
+            <span class="pw-label" id="pwLabel"></span>
+          </div>
+          <div class="form-group">
+            <label>Confirm Password</label>
+            <div class="input-group">
+              <span class="input-icon">&#128274;</span>
+              <input type="password" name="confirm_password" id="confirmPw" placeholder="Repeat password">
+              <button type="button" class="pw-toggle" onclick="togglePw('confirmPw', this)">&#128065;</button>
+            </div>
+          </div>
+          <label class="check-wrap" style="margin-bottom:1rem;display:flex">
+            <input type="checkbox" id="termsCheck">
+            <span class="checkmark"></span>
+            I agree to the <a href="#" class="link-small" style="margin-left:4px">Terms &amp; Privacy</a>
+          </label>
+          <div id="regError" class="form-error" style="display:none"></div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-outline" onclick="nextStep(2)">&larr; Back</button>
+            <button type="submit" class="btn btn-primary" id="regBtn">Create Account</button>
+          </div>
+        </div>
+
+      </form>
+
+      <p class="switch-link">Already have an account? <a href="login.html">Sign in</a></p>
+    </div>
+  </div>
+</div>
+
+<script src="js/main.js"></script>
+<script>
+  function showError(msg) {
+    var err = document.getElementById('regError');
+    if (err) { err.textContent = msg; err.style.display = 'block'; }
+    // scroll to error
+    if (err) err.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  function hideError() {
+    var err = document.getElementById('regError');
+    if (err) err.style.display = 'none';
+  }
+
+  function nextStep(n) {
+    // Validate before moving forward
+    if (n === 2) {
+      var fn = document.getElementById('firstNameField').value.trim();
+      var ln = document.getElementById('lastNameField').value.trim();
+      var em = document.getElementById('emailField').value.trim();
+      if (fn.length < 2) { showError('Please enter your first name (min 2 characters).'); return; }
+      if (ln.length < 2) { showError('Please enter your last name (min 2 characters).'); return; }
+      if (!em || !/^[^@]+@[^@]+\.[^@]+$/.test(em)) { showError('Please enter a valid email address.'); return; }
+    }
+    if (n === 3) {
+      var inst = document.getElementById('institutionField').value.trim();
+      if (inst.length < 2) { showError('Please enter your institution name.'); return; }
+    }
+    hideError();
+    for (var i = 1; i <= 3; i++) {
+      document.getElementById('step' + i).style.display = i === n ? 'block' : 'none';
+      var dot = document.getElementById('dot' + i);
+      var lbl = document.getElementById('lbl' + i);
+      dot.className = 'step-dot' + (i <= n ? ' active' : '') + (i < n ? ' done' : '');
+      lbl.className = i <= n ? 'active' : '';
+    }
+    if (n > 1) document.getElementById('line1').className = 'step-line active';
+    if (n > 2) document.getElementById('line2').className = 'step-line active';
+    if (n <= 1) document.getElementById('line1').className = 'step-line';
+    if (n <= 2) document.getElementById('line2').className = 'step-line';
+  }
+
+  function togglePw(id, btn) {
+    var inp = document.getElementById(id);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+  }
+
+  function checkStrength(v) {
+    var s = 0;
+    if (v.length >= 8) s++;
+    if (/[A-Z]/.test(v)) s++;
+    if (/[0-9]/.test(v)) s++;
+    if (/[^A-Za-z0-9]/.test(v)) s++;
+    var colors = ['#ef4444','#f97316','#eab308','#22c55e'];
+    var labels = ['Weak','Fair','Good','Strong'];
+    var bar = document.getElementById('pwBar');
+    var lbl = document.getElementById('pwLabel');
+    bar.style.width = (s * 25) + '%';
+    bar.style.background = colors[s - 1] || '#ef4444';
+    lbl.textContent = labels[s - 1] || '';
+  }
+
+  function handleRegister(e) {
+    e.preventDefault();
+    var p   = document.getElementById('regPw').value;
+    var c   = document.getElementById('confirmPw').value;
+    var btn = document.getElementById('regBtn');
+    var terms = document.getElementById('termsCheck');
+
+    if (!terms.checked) { showError('Please agree to the Terms & Privacy to continue.'); return; }
+    if (p.length < 8)   { showError('Password must be at least 8 characters.'); return; }
+    if (p !== c)        { showError('Passwords do not match.'); return; }
+
+    hideError();
+    btn.textContent = 'Creating…';
+    btn.disabled = true;
+
+    var data = new FormData(document.getElementById('regForm'));
+
+    fetch('php/register.php', { method: 'POST', body: data })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (res.success) {
+          btn.textContent = '✔ Account Created!';
+          window.location.href = 'dashboard.html';
+        } else {
+          showError(res.message || 'Registration failed.');
+          btn.textContent = 'Create Account';
+          btn.disabled = false;
+        }
+      })
+      .catch(function() {
+        showError('Server error — make sure XAMPP (Apache + MySQL) is running.');
+        btn.textContent = 'Create Account';
+        btn.disabled = false;
+      });
+  }
+</script>
+</body>
+</html>

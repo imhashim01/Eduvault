@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard – EduVault</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body class="dash-body">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-head">
+    <a href="index.html" class="logo"><span class="logo-hex">&#9698;</span> EduVault</a>
+    <button class="sidebar-close" id="sidebarClose" onclick="closeSidebar()">&#10005;</button>
+  </div>
+
+  <div class="profile-card">
+    <div class="avatar" id="sidebarAvatar">?</div>
+    <div class="profile-info">
+      <strong id="sidebarName">Loading...</strong>
+      <span id="sidebarRole">—</span>
+    </div>
+    <span class="online-dot"></span>
+  </div>
+
+  <nav class="sidenav" id="sidenav">
+    <!-- Populated by dashboard.js after role is fetched -->
+  </nav>
+
+  <div class="quota-box">
+    <span>Storage Used</span>
+    <div class="quota-track"><div class="quota-fill" style="width:34%"></div></div>
+    <span class="mono">3.4 GB / 10 GB</span>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main" id="mainContent">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <button class="menu-btn" onclick="openSidebar()">&#9776;</button>
+    <div class="topbar-search">
+      <span>&#128269;</span>
+      <input type="text" placeholder="Search assignments, students..." id="globalSearch">
+    </div>
+    <div class="topbar-right">
+      <button class="notif-btn" onclick="toggleNotif()">
+        &#128276; <span class="badge">3</span>
+      </button>
+      <div class="top-avatar" id="topAvatar">?</div>
+    </div>
+  </header>
+
+  <!-- NOTIFICATION PANEL -->
+  <div class="notif-panel" id="notifPanel" style="display:none">
+    <div class="notif-head">
+      Notifications <button onclick="toggleNotif()">&#10005;</button>
+    </div>
+    <div class="notif-item unread">
+      <span class="notif-dot"></span>
+      <div>
+        <strong>High Similarity Detected</strong>
+        <p>OS Lab Report scored 87% similarity</p>
+        <small>2 min ago</small>
+      </div>
+    </div>
+    <div class="notif-item unread">
+      <span class="notif-dot"></span>
+      <div>
+        <strong>Submission Received</strong>
+        <p>Data Structures assignment accepted</p>
+        <small>1 hr ago</small>
+      </div>
+    </div>
+    <div class="notif-item">
+      <span class="notif-dot off"></span>
+      <div>
+        <strong>Grade Posted</strong>
+        <p>Database Systems Project: A+</p>
+        <small>Yesterday</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PANEL: OVERVIEW ===== -->
+  <div class="panel active" id="panel-overview">
+    <div class="panel-head">
+      <div>
+        <h2>Overview</h2>
+        <p id="overviewWelcome">Welcome back! Here's your snapshot.</p>
+      </div>
+      <span class="mono date-label">Friday, 09 May 2025</span>
+    </div>
+
+    <!-- KPI Row -->
+    <div class="kpi-row">
+      <div class="kpi-card blue">
+        <div class="kpi-icon">&#128228;</div>
+        <div class="kpi-body"><span class="kpi-num">12</span><span class="kpi-lbl">Total Submissions</span></div>
+        <span class="kpi-badge up">+3 this week</span>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-icon">&#9989;</div>
+        <div class="kpi-body"><span class="kpi-num">9</span><span class="kpi-lbl">Approved</span></div>
+        <span class="kpi-badge up">75% pass</span>
+      </div>
+      <div class="kpi-card yellow">
+        <div class="kpi-icon">&#9888;</div>
+        <div class="kpi-body"><span class="kpi-num">2</span><span class="kpi-lbl">Under Review</span></div>
+        <span class="kpi-badge warn">Flagged</span>
+      </div>
+      <div class="kpi-card red">
+        <div class="kpi-icon">&#128680;</div>
+        <div class="kpi-body"><span class="kpi-num">1</span><span class="kpi-lbl">High Similarity</span></div>
+        <span class="kpi-badge down">Action needed</span>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+      <div class="chart-box wide">
+        <div class="chart-head">
+          <h3>Submission Timeline</h3>
+          <div class="chart-legend">
+            <span class="leg-dot cyan"></span> Submissions
+            <span class="leg-dot green"></span> Approved
+          </div>
+        </div>
+        <canvas id="timelineChart" height="180"></canvas>
+      </div>
+      <div class="chart-box">
+        <div class="chart-head"><h3>Risk Distribution</h3></div>
+        <canvas id="riskDonut" height="180"></canvas>
+        <div class="donut-legend">
+          <span class="leg-dot green"></span> Low
+          <span class="leg-dot yellow"></span> Medium
+          <span class="leg-dot red"></span> High
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Table -->
+    <div class="table-box">
+      <div class="table-head">
+        <h3>Recent Submissions</h3>
+        <button class="btn btn-ghost small" onclick="showPanel('submissions')">View All &rarr;</button>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th>Assignment</th><th>Course</th><th>Date</th><th>Similarity</th><th>Status</th><th>Action</th></tr>
+          </thead>
+          <tbody id="recentBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PANEL: SUBMIT ===== -->
+  <div class="panel" id="panel-submit">
+    <div class="panel-head">
+      <div><h2>Submit Assignment</h2><p>Upload your work securely for analysis</p></div>
+    </div>
+    <div class="submit-layout">
+      <div class="submit-form box-card">
+        <form id="uploadForm">
+          <div class="form-group">
+            <label>Assignment Title</label>
+            <div class="input-group">
+              <span class="input-icon">&#128221;</span>
+              <input type="text" name="title" placeholder="e.g. Operating Systems Lab Report 3" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Course Code</label>
+              <div class="input-group">
+                <span class="input-icon">&#127979;</span>
+                <input type="text" name="course" placeholder="CSC 401" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Assignment Type</label>
+              <div class="input-group">
+                <span class="input-icon">&#128193;</span>
+                <select name="type">
+                  <option>Lab Report</option>
+                  <option>Research Paper</option>
+                  <option>Project</option>
+                  <option>Thesis Chapter</option>
+                  <option>Essay</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Description (optional)</label>
+            <textarea name="description" rows="3" placeholder="Brief description..."></textarea>
+          </div>
+
+          <!-- fileInput MUST be outside dropZone to avoid click-bubbling double-trigger -->
+          <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt" style="display:none">
+          <div class="drop-zone" id="dropZone">
+            <div class="drop-icon">&#128193;</div>
+            <h4>Drag &amp; Drop your file here</h4>
+            <p>or <label for="fileInput" class="link-text" onclick="event.stopPropagation()">browse files</label></p>
+            <small>PDF, DOCX, TXT &bull; Max 25 MB</small>
+          </div>
+
+          <div class="file-preview" id="filePreview" style="display:none">
+            <span>&#128196;</span>
+            <div class="file-info">
+              <span id="fileName">file.pdf</span>
+              <span id="fileSize" class="mono">0 KB</span>
+            </div>
+            <button type="button" onclick="removeFile()">&#10005;</button>
+          </div>
+
+          <div class="progress-wrap" id="progressWrap" style="display:none">
+            <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+            <span id="progressLabel">Uploading... 0%</span>
+          </div>
+
+          <button type="submit" class="btn btn-primary full" id="uploadBtn" style="margin-top:1.5rem">
+            &#128640; Submit &amp; Analyze
+          </button>
+        </form>
+      </div>
+
+      <div class="guidelines">
+        <div class="box-card">
+          <h3>&#128203; Submission Guidelines</h3>
+          <ul>
+            <li>&#8594; Submit only your original work</li>
+            <li>&#8594; Accepted: PDF, DOCX, TXT</li>
+            <li>&#8594; Max file size: 25 MB</li>
+            <li>&#8594; Files are encrypted at rest</li>
+            <li>&#8594; Analysis takes 10–30 seconds</li>
+          </ul>
+        </div>
+        <div class="box-card">
+          <h3>&#128300; Similarity Scale</h3>
+          <div class="risk-scale">
+            <div class="risk-row"><span class="badge-sim low">0–20%</span> Original work</div>
+            <div class="risk-row"><span class="badge-sim med">21–50%</span> Needs review</div>
+            <div class="risk-row"><span class="badge-sim high">51%+</span> High risk</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PANEL: SUBMISSIONS ===== -->
+  <div class="panel" id="panel-submissions">
+    <div class="panel-head">
+      <div><h2>My Submissions</h2><p>All your submitted assignments and analysis results</p></div>
+      <button class="btn btn-primary" onclick="showPanel('submit')">+ New Submission</button>
+    </div>
+
+    <div class="filter-bar box-card">
+      <div class="filter-search">
+        <span>&#128269;</span>
+        <input type="text" id="subSearch" placeholder="Search by title, course..." oninput="filterSubs()">
+      </div>
+      <div class="filter-selects">
+        <select id="filterCourse" onchange="filterSubs()">
+          <option value="">All Courses</option>
+          <option>CSC 401</option><option>CSC 310</option>
+          <option>CSC 201</option><option>NET 210</option>
+        </select>
+        <select id="filterStatus" onchange="filterSubs()">
+          <option value="">All Status</option>
+          <option>Approved</option><option>Under Review</option><option>Rejected</option>
+        </select>
+        <select id="filterRisk" onchange="filterSubs()">
+          <option value="">All Risk</option>
+          <option value="low">Low (&lt;20%)</option>
+          <option value="med">Medium (20-50%)</option>
+          <option value="high">High (&gt;50%)</option>
+        </select>
+        <button class="btn btn-ghost small" onclick="clearFilters()">Clear</button>
+      </div>
+    </div>
+
+    <div class="table-box">
+      <div class="table-wrap">
+        <table class="data-table" id="subsTable">
+          <thead>
+            <tr>
+              <th class="sortable" onclick="sortSubs(0)">Assignment &#8597;</th>
+              <th class="sortable" onclick="sortSubs(1)">Course &#8597;</th>
+              <th class="sortable" onclick="sortSubs(2)">Date &#8597;</th>
+              <th class="sortable" onclick="sortSubs(3)">Similarity &#8597;</th>
+              <th>AI Prob.</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="subsBody"></tbody>
+        </table>
+      </div>
+      <div class="table-foot">
+        <span id="subCount" class="mono">Showing 8 entries</span>
+        <div class="pagination">
+          <button class="pg-btn active">1</button>
+          <button class="pg-btn">2</button>
+          <button class="pg-btn">3</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PANEL: SIMILARITY RADAR ===== -->
+  <div class="panel" id="panel-similarity">
+    <div class="panel-head">
+      <div><h2>Similarity Radar</h2><p>Deep-dive similarity analysis and plagiarism risk assessment</p></div>
+    </div>
+
+    <div class="analysis-bar box-card">
+      <label>Analyzing:</label>
+      <select id="docSelect">
+        <option value="">— Select a submission to analyze —</option>
+      </select>
+      <button class="btn btn-primary small" onclick="reanalyze()">&#8635; Re-analyze</button>
+    </div>
+
+    <!-- Score area -->
+    <div class="score-area">
+      <div class="score-ring-box box-card">
+        <canvas id="scoreRing" width="200" height="200"></canvas>
+        <div class="score-info">
+          <span class="score-val" id="scoreVal">—</span>
+          <span class="score-pct">%</span>
+          <span class="score-lbl">Similarity</span>
+        </div>
+        <div class="risk-pill" id="riskPill">SELECT A FILE</div>
+      </div>
+
+      <div class="radar-box box-card">
+        <canvas id="radarMain" width="280" height="280"></canvas>
+        <h4>5-Axis Radar Analysis</h4>
+      </div>
+
+      <div class="metrics-box">
+        <div class="metric box-card">
+          <span class="m-name">Originality Score</span>
+          <div class="m-track"><div class="m-fill" id="m1" style="width:13%;background:#ef4444"></div></div>
+          <span class="m-val mono" id="mv1">13%</span>
+        </div>
+        <div class="metric box-card">
+          <span class="m-name">Structural Match</span>
+          <div class="m-track"><div class="m-fill" id="m2" style="width:82%;background:#ef4444"></div></div>
+          <span class="m-val mono" id="mv2">82%</span>
+        </div>
+        <div class="metric box-card">
+          <span class="m-name">Citation Integrity</span>
+          <div class="m-track"><div class="m-fill" id="m3" style="width:45%;background:#eab308"></div></div>
+          <span class="m-val mono" id="mv3">45%</span>
+        </div>
+        <div class="metric box-card">
+          <span class="m-name">Paraphrase Index</span>
+          <div class="m-track"><div class="m-fill" id="m4" style="width:71%;background:#ef4444"></div></div>
+          <span class="m-val mono" id="mv4">71%</span>
+        </div>
+        <div class="metric box-card">
+          <span class="m-name">Source Diversity</span>
+          <div class="m-track"><div class="m-fill" id="m5" style="width:28%;background:#eab308"></div></div>
+          <span class="m-val mono" id="mv5">28%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Matches -->
+    <div class="matches-box box-card">
+      <h3>&#128269; Matched Segments</h3>
+      <div id="matchList">
+        <p style="color:#9090aa;font-size:13px;padding:8px 0">Select a submission above to view matched segments.</p>
+      </div>
+    </div>
+
+    <!-- ===== AI DETECTION SECTION ===== -->
+    <div class="ai-detect-section">
+
+      <!-- Header bar -->
+      <div class="ai-detect-header box-card">
+        <div class="ai-detect-title">
+          <span class="ai-icon">&#129302;</span>
+          <div>
+            <h3>AI-Generated Content Detection</h3>
+            <p>Analyzes 8 linguistic features to detect AI-written text (ChatGPT, Gemini, Claude, etc.)</p>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="runAIBtn" onclick="runAIDetection()">
+          &#129302; Run AI Detection
+        </button>
+      </div>
+
+      <!-- Loading state -->
+      <div class="ai-loading box-card" id="aiLoading" style="display:none">
+        <div class="ai-loading-inner">
+          <div class="ai-spinner"></div>
+          <div>
+            <strong id="aiLoadingMsg">Analyzing linguistic patterns...</strong>
+            <p id="aiLoadingStep">Running 8 detection algorithms</p>
+          </div>
+        </div>
+        <div class="ai-progress-track">
+          <div class="ai-progress-fill" id="aiProgressFill"></div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="ai-results" id="aiResults" style="display:none">
+
+        <!-- Verdict card -->
+        <div class="ai-verdict-card box-card" id="aiVerdictCard">
+          <div class="ai-verdict-left">
+            <div class="ai-prob-ring-wrap">
+              <canvas id="aiRing" width="160" height="160"></canvas>
+              <div class="ai-prob-center">
+                <span id="aiProbNum">0</span>
+                <span class="ai-prob-pct">%</span>
+                <span class="ai-prob-lbl">AI Probability</span>
+              </div>
+            </div>
+          </div>
+          <div class="ai-verdict-right">
+            <div class="ai-verdict-badge" id="aiVerdictBadge">—</div>
+            <div class="ai-confidence">Confidence: <strong id="aiConfidence">—</strong></div>
+            <p class="ai-note" id="aiNote">Run the detection to see results.</p>
+            <div class="ai-word-count">Analyzed: <span id="aiWordCount">—</span> words</div>
+          </div>
+        </div>
+
+        <!-- 8 Detectors -->
+        <div class="ai-detectors-grid" id="aiDetectorsGrid">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Flagged phrases -->
+        <div class="ai-flagged box-card" id="aiFlagged" style="display:none">
+          <h4>&#9888; Flagged AI-Style Phrases</h4>
+          <div id="aiFlaggedList"></div>
+        </div>
+
+      </div><!-- /ai-results -->
+
+    </div><!-- /ai-detect-section -->
+  </div><!-- /panel-similarity -->
+
+  <!-- ===== PANEL: ADMIN ===== -->
+  <div class="panel" id="panel-admin">
+    <div class="panel-head">
+      <div><h2>Admin Control Center</h2><p>Manage students, submissions, and system settings</p></div>
+      <div style="display:flex;gap:.6rem">
+        <button class="btn btn-ghost small" onclick="exportCSV()">&#128229; Export CSV</button>
+        <button class="btn btn-primary small">+ Add Student</button>
+      </div>
+    </div>
+
+    <!-- Admin KPIs -->
+    <div class="kpi-row">
+      <div class="kpi-card blue">
+        <div class="kpi-icon">&#128101;</div>
+        <div class="kpi-body"><span class="kpi-num">486</span><span class="kpi-lbl">Total Students</span></div>
+        <span class="kpi-badge up">+24 this month</span>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-icon">&#128193;</div>
+        <div class="kpi-body"><span class="kpi-num">3,241</span><span class="kpi-lbl">Submissions</span></div>
+        <span class="kpi-badge up">All time</span>
+      </div>
+      <div class="kpi-card yellow">
+        <div class="kpi-icon">&#9888;</div>
+        <div class="kpi-body"><span class="kpi-num">47</span><span class="kpi-lbl">Flagged</span></div>
+        <span class="kpi-badge warn">Needs review</span>
+      </div>
+      <div class="kpi-card purple">
+        <div class="kpi-icon">&#127963;</div>
+        <div class="kpi-body"><span class="kpi-num">12</span><span class="kpi-lbl">Departments</span></div>
+        <span class="kpi-badge up">Active</span>
+      </div>
+    </div>
+
+    <div class="table-box">
+      <div class="table-head">
+        <h3>All Submissions</h3>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+          <input type="text" id="adminSearch" placeholder="&#128269; Search..." class="search-input" oninput="filterAdmin()">
+          <select id="adminDept" onchange="filterAdmin()">
+            <option value="">All Departments</option>
+            <option>Computer Science</option>
+            <option>Engineering</option>
+            <option>Business</option>
+          </select>
+          <select id="adminRisk" onchange="filterAdmin()">
+            <option value="">All Risk</option>
+            <option value="low">Low</option>
+            <option value="med">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th>Student</th><th>Assignment</th><th>Department</th><th>Date</th><th>Similarity</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="adminBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PANEL: ANALYTICS ===== -->
+  <div class="panel" id="panel-analytics">
+    <div class="panel-head">
+      <div><h2>Analytics Suite</h2><p>Institution-wide submission and integrity trends</p></div>
+      <select class="btn btn-ghost small">
+        <option>Last 7 days</option><option>Last 30 days</option>
+        <option>Last 90 days</option><option>This year</option>
+      </select>
+    </div>
+    <div class="analytics-grid">
+      <div class="chart-box wide box-card">
+        <div class="chart-head"><h3>Monthly Submissions vs Flags</h3></div>
+        <canvas id="analyticsBar" height="200"></canvas>
+      </div>
+      <div class="chart-box box-card">
+        <div class="chart-head"><h3>Risk by Department</h3></div>
+        <canvas id="deptRadar" height="200"></canvas>
+      </div>
+      <div class="chart-box box-card">
+        <div class="chart-head"><h3>Score Distribution</h3></div>
+        <canvas id="histChart" height="200"></canvas>
+      </div>
+      <div class="chart-box box-card">
+        <div class="chart-head"><h3>File Type Breakdown</h3></div>
+        <canvas id="pieChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PANEL: SETTINGS ===== -->
+  <div class="panel" id="panel-settings">
+    <div class="panel-head">
+      <div><h2>Account Settings</h2><p>Manage your profile and preferences</p></div>
+    </div>
+    <div class="settings-grid">
+      <div class="box-card">
+        <h3>Profile Information</h3>
+        <div class="avatar-row">
+          <div class="avatar big">JS</div>
+          <button class="btn btn-ghost small">Change Photo</button>
+        </div>
+        <div class="form-group"><label>Full Name</label>
+          <div class="input-group"><input type="text" value="John Smith"></div>
+        </div>
+        <div class="form-group"><label>Email</label>
+          <div class="input-group"><input type="email" value="john@university.edu"></div>
+        </div>
+        <div class="form-group"><label>Student ID</label>
+          <div class="input-group"><input type="text" value="STU-2024-042"></div>
+        </div>
+        <button class="btn btn-primary">Save Changes</button>
+      </div>
+
+      <div class="box-card">
+        <h3>Notifications</h3>
+        <div class="toggle-row"><span>Email on submission</span>
+          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row"><span>High similarity alerts</span>
+          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row"><span>Grade notifications</span>
+          <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row"><span>Weekly digest</span>
+          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+      <div class="box-card">
+        <h3>Security</h3>
+        <div class="form-group"><label>Current Password</label>
+          <div class="input-group"><input type="password" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"></div>
+        </div>
+        <div class="form-group"><label>New Password</label>
+          <div class="input-group"><input type="password" placeholder="Min 8 chars"></div>
+        </div>
+        <div class="form-group"><label>Confirm Password</label>
+          <div class="input-group"><input type="password" placeholder="Repeat password"></div>
+        </div>
+        <button class="btn btn-primary">Update Password</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script src="js/main.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/upload.js"></script>
+<script src="js/similarity.js"></script>
+<script src="js/ai_detection.js"></script>
+</body>
+</html>

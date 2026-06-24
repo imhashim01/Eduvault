@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In – EduVault</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-page">
+
+<div class="auth-bg">
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+</div>
+
+<div class="auth-wrap">
+  <!-- Left panel -->
+  <div class="auth-left">
+    <a href="index.html" class="logo"><span class="logo-hex">&#9698;</span> EduVault</a>
+    <div class="auth-tagline">
+      <canvas id="authRadar" width="220" height="220"></canvas>
+      <h2>Academic Integrity<br>Starts Here.</h2>
+      <p>Every submission analyzed. Every credential protected.</p>
+    </div>
+    <div class="auth-mini-stats">
+      <div class="mini-stat"><strong>250K+</strong><span>Documents</span></div>
+      <div class="mini-stat"><strong>98.7%</strong><span>Accuracy</span></div>
+      <div class="mini-stat"><strong>1200+</strong><span>Institutions</span></div>
+    </div>
+  </div>
+
+  <!-- Right panel -->
+  <div class="auth-right">
+    <div class="auth-card">
+      <h1>Welcome Back</h1>
+      <p class="auth-sub">Sign in to your EduVault account</p>
+
+      <!-- Role tabs -->
+      <div class="role-tabs">
+        <button class="role-tab active" onclick="setRole('student', this)">Student</button>
+        <button class="role-tab" onclick="setRole('admin', this)">Admin</button>
+      </div>
+
+      <form id="loginForm" action="php/login.php" method="POST" onsubmit="handleLogin(event)">
+        <input type="hidden" name="role" id="roleField" value="student">
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <div class="input-group">
+            <span class="input-icon">&#9993;</span>
+            <input type="email" id="email" name="email" placeholder="student@university.edu" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-group">
+            <span class="input-icon">&#128274;</span>
+            <input type="password" id="password" name="password" placeholder="Your password" required>
+            <button type="button" class="pw-toggle" onclick="togglePw('password', this)">&#128065;</button>
+          </div>
+        </div>
+
+        <div class="form-options">
+          <label class="check-wrap">
+            <input type="checkbox" name="remember">
+            <span class="checkmark"></span>
+            Remember me
+          </label>
+          <a href="#" class="link-small">Forgot password?</a>
+        </div>
+
+        <div id="loginError" class="form-error" style="display:none"></div>
+
+        <button type="submit" class="btn btn-primary full" id="loginBtn">Sign In</button>
+      </form>
+
+      <div class="divider"><span>or</span></div>
+      <div class="social-row">
+        <button class="btn btn-outline half">&#127979; SSO Login</button>
+        <button class="btn btn-outline half">&#127963; LMS Connect</button>
+      </div>
+
+      <p class="switch-link">Don't have an account? <a href="register.html">Create one free</a></p>
+    </div>
+  </div>
+</div>
+
+<script src="js/main.js"></script>
+<script>
+  function setRole(role, el) {
+    document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('roleField').value = role;
+  }
+
+  function togglePw(id, btn) {
+    var inp = document.getElementById(id);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+  }
+
+  function handleLogin(e) {
+    e.preventDefault();
+    var btn  = document.getElementById('loginBtn');
+    var err  = document.getElementById('loginError');
+    var form = document.getElementById('loginForm');
+
+    err.style.display = 'none';
+    btn.textContent = 'Signing in…';
+    btn.disabled = true;
+
+    var data = new FormData(form);
+
+    fetch('php/login.php', { method: 'POST', body: data })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (res.success) {
+          btn.textContent = '✔ Success!';
+          window.location.href = 'dashboard.html';
+        } else {
+          err.textContent = res.message || 'Login failed.';
+          err.style.display = 'block';
+          btn.textContent = 'Sign In';
+          btn.disabled = false;
+        }
+      })
+      .catch(function() {
+        err.textContent = 'Server error — make sure XAMPP (Apache + MySQL) is running.';
+        err.style.display = 'block';
+        btn.textContent = 'Sign In';
+        btn.disabled = false;
+      });
+  }
+</script>
+</body>
+</html>
